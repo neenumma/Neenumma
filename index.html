@@ -21,7 +21,6 @@ body{
   background:white;
   padding:30px;
   border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
 button{
@@ -36,24 +35,27 @@ button{
 #lines{
   font-size:24px;
   color:white;
-  transition:0.4s;
 }
 
-#photoBox{
+/* Photos */
+.photo{
   position:absolute;
   top:20px;
-  left:20px;
-  width:130px;
-  height:160px;
+  width:120px;
+  height:150px;
+  background:white;
+  padding:8px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  transition:0.5s;
 }
 
-#photoBox img{
+#leftPhoto{ left:20px; transform:rotate(-6deg); }
+#rightPhoto{ right:20px; transform:rotate(6deg); }
+
+.photo img{
   width:100%;
   height:100%;
   object-fit:cover;
-  border-radius:10px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.3);
-  transition:0.6s;
 }
 
 .fade{
@@ -65,14 +67,18 @@ button{
 
 <body>
 
-<div id="photoBox">
-  <img id="photo" src="photo1.jpg">
-</div>
-
 <div class="container" id="questionBox">
   <h2>Edi, yy nk ara aryuo? 😏💖</h2>
   <button onclick="yes()">Yes 😌</button>
   <button onclick="no()">No 😏</button>
+</div>
+
+<div id="leftPhoto" class="photo" style="display:none;">
+  <img id="imgLeft" src="photo1.jpg">
+</div>
+
+<div id="rightPhoto" class="photo" style="display:none;">
+  <img id="imgRight" src="photo2.jpg">
 </div>
 
 <div id="lines"></div>
@@ -87,32 +93,27 @@ function yes(){
 }
 
 function no(){
+
   document.getElementById("questionBox").style.display="none";
+  document.getElementById("leftPhoto").style.display="block";
+  document.getElementById("rightPhoto").style.display="block";
 
   const audio = document.getElementById("song");
   const lineBox = document.getElementById("lines");
-  const photo = document.getElementById("photo");
+  const left = document.getElementById("imgLeft");
+  const right = document.getElementById("imgRight");
 
   audio.play();
 
-  let lastLine = -1;
-  let photoIndex = 0;
-  let interval;
-
-  const photoSets = [
-    ["photo1.jpg","photo2.jpg"],
-    ["photo3.jpg","photo4.jpg"],
-    ["photo5.jpg","photo6.jpg"],
-    ["photo7.jpg","photo8.jpg"]
-  ];
-
-  function changePhoto(set){
-    photo.classList.add("fade");
+  function changePhotos(l,r){
+    left.classList.add("fade");
+    right.classList.add("fade");
 
     setTimeout(()=>{
-      photo.src = set[photoIndex % 2];
-      photoIndex++;
-      photo.classList.remove("fade");
+      left.src = l;
+      right.src = r;
+      left.classList.remove("fade");
+      right.classList.remove("fade");
     },300);
   }
 
@@ -120,30 +121,21 @@ function no(){
 
     let t = audio.currentTime;
 
-    function switchSet(index){
-      if(lastLine !== index){
-        lastLine = index;
-        photoIndex = 0;
-        clearInterval(interval);
-        interval = setInterval(()=>changePhoto(photoSets[index]),1500);
-      }
-    }
-
     if(t >= 0 && t < 1.5){
       lineBox.innerHTML = "Kaath kittye muthannn 😚💋";
-      switchSet(0);
+      changePhotos("photo1.jpg","photo2.jpg");
     }
     else if(t >= 1.5 && t < 4.75){
       lineBox.innerHTML = "Thedi kittya ponaane 😌❤️";
-      switchSet(1);
+      changePhotos("photo3.jpg","photo4.jpg");
     }
     else if(t >= 4.75 && t < 9){
       lineBox.innerHTML = "Kattedthoru moha sothaneeee 😌❤️🫵🏻";
-      switchSet(2);
+      changePhotos("photo5.jpg","photo6.jpg");
     }
     else if(t >= 9){
       lineBox.innerHTML = "Love uhhh mwaaahhh 😌💋💗";
-      switchSet(3);
+      changePhotos("photo7.jpg","photo8.jpg");
     }
 
   };
